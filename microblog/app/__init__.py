@@ -23,7 +23,6 @@ babel = Babel(app)
 
 from app import routes, models, errors
 
-
 if not app.debug:
     if app.config['MAIL_SERVER']:
         auth = None
