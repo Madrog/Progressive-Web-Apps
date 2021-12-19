@@ -9,7 +9,7 @@ from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
 import os, logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
-
+from elasticsearch import Elasticsearch
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -39,6 +39,9 @@ def create_app(config_class=Config):
 
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
+
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+        if app.config['ELASTICSEARCH_URL'] else None
 
 
     if not app.debug and not app.testing:
