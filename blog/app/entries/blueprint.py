@@ -1,14 +1,21 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 
 from app.helpers import object_list
 from app.models import Entry, Tag
 
 entries = Blueprint('entries', __name__, template_folder='templates')
 
+def entry_list(template, query, **context):
+    search = request.args.get('q')
+    if search:
+        query = query.filter((Entry.boody.contains(search)) | (Entry.title.contains(search)))
+        return object_list(template, query, **context)
+
+
 @entries.route('/')
 def index():
     entries = Entry.query.order_by(Entry.created_timestamp.desc())
-    return object_list('entries/index.html', entries)
+    return entry_list('entries/index.html', entries)
 
 @entries.route('/tags/')
 def tag_index():
@@ -19,7 +26,7 @@ def tag_index():
 def tag_detail(slug):
     tag =  Tag.query.filter(Tag.slug == slug).first_or_404()
     entries = tag.entries.order_by(Entry.created_timestamp.desc())
-    return object_list('entries/tag_details.html', entries, tag=tag)
+    return entry_list('entries/tag_detail.html', entries, tag=tag)
 
 @entries.route('/<slug>/')
 def detail(slug):
