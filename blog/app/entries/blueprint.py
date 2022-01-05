@@ -8,8 +8,8 @@ entries = Blueprint('entries', __name__, template_folder='templates')
 def entry_list(template, query, **context):
     search = request.args.get('q')
     if search:
-        query = query.filter((Entry.boody.contains(search)) | (Entry.title.contains(search)))
-        return object_list(template, query, **context)
+        query = query.filter((Entry.body.contains(search)) | (Entry.title.contains(search)))
+    return object_list(template, query, **context)
 
 
 @entries.route('/')
