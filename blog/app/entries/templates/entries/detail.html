@@ -5,6 +5,7 @@
 {% block content_title %} {{ entry.title }} {% endblock %}
 
 {% block sidebar %}
+    <a href="{{ url_for('entries.edit', slug=entry.slug) }}">Edit</a>
     <ul class="well nav nav-list">
         <li><h4>Tags</h4></li>
         {% for tag in entry.tags %}
@@ -12,6 +13,7 @@
         {% endfor %}
     </ul>
     <p>Published {{ entry.created_timestamp.strftime('%m/%d/%Y') }}</p>
+    
 {% endblock %}
 
 {% block content %}
