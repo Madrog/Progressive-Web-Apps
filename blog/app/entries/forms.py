@@ -1,10 +1,10 @@
-import wtforms
-from wtforms.validators import DataRequired
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SelectField
+from wtforms.validators import DataRequired, Length
 
 from app.models import Entry, Tag
 
-
-class TagField(wtforms.StringField):
+class TagField(StringField):
     def _value(self):
         if self.data:
             # Display tags as a comma-separated list
@@ -35,10 +35,12 @@ class TagField(wtforms.StringField):
             self.data = self.get_tags_from_string(valuelist[0])
         else:
             self.data = []
-class EntryForm(wtforms.Form):
-    title = wtforms.StringField('Title', validators=[DataRequired()])
-    body = wtforms.TextAreaField('Body', validators=[DataRequired()])
-    status = wtforms.SelectField(
+
+
+class EntryForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    body = TextAreaField('Body', validators=[DataRequired(), Length(min=0, max=140)])
+    status = SelectField(
         'Entry status',
         choices=(
             (Entry.STATUS_PUBLIC, 'Public'),

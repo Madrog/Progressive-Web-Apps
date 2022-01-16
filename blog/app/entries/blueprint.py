@@ -69,16 +69,21 @@ def detail(slug):
 @entries.route('/<slug>/edit/', methods=['GET', 'POST'])
 def edit(slug):
     entry = get_entry_or_404(slug)
-    if request.method == 'POST':
-        form = EntryForm(request.form, obj=entry)
-        if form.validate():
-            entry = form.save_entry(entry)
-            db.session.add(entry)
-            db.session.commit()
-            flash('Entry "%s" has been saved.' % entry.title, 'success')
-            return redirect(url_for('entries.detail', slug=entry.slug))
-    else:
-        form = EntryForm(obj=entry)
+    form = EntryForm()
+    if form.validate_on_submit():
+        entry.title = form.title.data
+        entry.body = form.body.data
+        entry.status = form.status.data
+        entry.tags = form.tags.data
+        entry = form.save_entry(entry)
+        db.session.commit()
+        flash('Entry "%s" has been saved.' % entry.title, 'success')
+        return redirect(url_for('entries.detail', slug=entry.slug))
+    elif request.method == 'GET':
+        form.title.data = entry.title
+        form.body.data = entry.body
+        form.status.data = entry.status
+        form.tags.data = entry.tags
     return render_template('entries/edit.html', entry=entry, form=form)
 
 
@@ -87,7 +92,6 @@ def delete(slug):
     entry = get_entry_or_404(slug)
     if request.method == 'POST':
         entry.status = Entry.STATUS_DELETED
-        db.session.add(entry)
         db.session.commit()
         flash('Entry "%s" has been deleted.' % entry.title, 'success')
         return redirect(url_for('entries.index'))
