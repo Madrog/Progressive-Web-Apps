@@ -5,5 +5,6 @@ class Configuration(object):
     DEBUG = True
     SECRET_KEY = 'flask is fun!'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///%s/blog.db' % APPLICATION_DIR
-    
+    STATIC_DIR = os.path.join(APPLICATION_DIR, 'static')
+    IMAGES_DIR = os.path.join(STATIC_DIR, 'images')    
 

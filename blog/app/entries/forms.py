@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField
+from wtforms import StringField, TextAreaField, SelectField, FileField
 from wtforms.validators import DataRequired, Length
 
 from app.models import Entry, Tag
@@ -35,6 +35,10 @@ class TagField(StringField):
             self.data = self.get_tags_from_string(valuelist[0])
         else:
             self.data = []
+
+
+class ImageForm(FlaskForm):
+    file = FileField('Image file')
 
 
 class EntryForm(FlaskForm):
