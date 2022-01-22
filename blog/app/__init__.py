@@ -1,11 +1,15 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_login import LoginManager
+from flask_bootstrap import Bootstrap
 
 from app.config import Configuration 
 
 db = SQLAlchemy()
 migrate = Migrate()
+bootstrap = Bootstrap()
+login = LoginManager()
 
 
 def create_app(config_class=Configuration):
@@ -14,6 +18,8 @@ def create_app(config_class=Configuration):
     
     db.init_app(app)
     migrate.init_app(app, db)
+    login.init_app(app)
+    bootstrap.init_app(app)
 
     from app.views import views
     app.register_blueprint(views, url_prefix='/')

@@ -5,7 +5,7 @@
 
 {% block content_title %}Create new entry{% endblock %}
 
-{% block content %}
+{% block app_content %}
     <form action="{{ url_for('entries.create') }}" class="form form-horizontal" method="post">
         {% for field in form %}
             {{ form_field(field) }}
