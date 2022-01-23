@@ -1,58 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
-{% block title %}
-    {% if title %}{{ title }} - Microblog{% else %}{{ _('Welcome to Microblog') }}{% endif %}
-{% endblock %}
-
-{% block navbar %}
-    <nav class="navbar navbar-default">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}{% endblock %} | My Blog</title>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+        <style type="text/css">
+        body { padding-top: 60px; }
+        </style>
+        {% block extra_styles %}{% endblock %}
+        <script src=
+        "https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script
+        src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/
+        bootstrap.min.js"></script>
+        {% block extra_scripts %}{% endblock %}
+    </head>
+    <body class="{% block body_class %}{% endblock %}">
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{{ url_for('views.homepage') }}">Microblog</a>
+            <button type="button" class="navbar-toggle"
+            data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('entries.index')}}">{% block branding %}My
+            Blog{% endblock %}</a>
             </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('views.homepage') }}">{{ _('Home') }}</a></li>
-                    <li><a href="{{ url_for('entries.index') }}">{{ _('Explore') }}</a></li>
-                </ul> 
-            </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('views.homepage')}}">Home</a></li>
+                <li><a href="{{ url_for('entries.index')}}">Blog</a></li>
+                {% block extra_nav %}{% endblock %}
+            </ul>
         </div>
-    </nav>
-{% endblock %}
+        </div>
+        </div>
 
-{% block content %}
-    <div class="container">
-        {% if current_user.is_authenticated %}
-        {% with tasks = current_user.get_tasks_in_progress() %}
-        {% if tasks %}
-            {% for task in tasks %}
-            <div class="alert alert-success" role="alert">
-                {{ task.description }}
-                <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%
-            </div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
-        {% endif %}
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
-
-        {# application content needs to be provided in the app_content block #}
-        {% block app_content %}{% endblock %}
-    </div>
-{% endblock %}
-
+        <div class="container">
+        <div class="row">
+        <div class="col-md-9">
+        <h1>{% block content_title %}{% endblock %}</h1>
+        {% block content %}
+        {% endblock %}
+        </div>
+        <div class="col-md-3">
+        {% block sidebar %}
+        <ul class="well nav nav-stacked">
+        <li><a href="#">Sidebar item</a></li>
+        </ul>
+        {% endblock %}
+        </div>
+        </div>
+        <div class="row">
+        <hr />
+        <footer>
+        <p>&copy; your name</p>
+        </footer>
+        </div>
+        </div>
+    </body>
 </html>

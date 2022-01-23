@@ -9,8 +9,6 @@ def homepage():
     number = request.args.get('number')
     if not name:
         name = '<unknown>'
-    if not number:
-        number = 2
     return render_template('homepage.html', name=name, number=number)
 
 

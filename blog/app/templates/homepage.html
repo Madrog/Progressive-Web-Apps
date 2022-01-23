@@ -2,18 +2,18 @@
 
 {% block content_title %} Welcome to my blog {% endblock %}
 
-{% block app_content %}
+{% block content %}
     {% if number %}    
-        <p> Your is {{ number | int }}</p>
-        <ul>
-            {% for i in range(number|int) %}
-                {% if i is divisibleby 2 %}
-                    <li>{{ i }}</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+    <p> Your is {{ number | int }}</p>
+    <ul>
+        {% for i in range(number|int) %}
+            {% if i is divisibleby 2 %}
+                <li>{{ i }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
     {% else %}
-        <p>No number specified.</p>
+    <p>No number specified.</p>
     {% endif %}
 
     <p>Your name is {{ name|default('<unknown>', True) }}.</p>
