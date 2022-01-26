@@ -16,8 +16,6 @@ login_manager.login_view = "login"
 bcrypt = Bcrypt()
 
 
-
-
 def create_app(config_class=Configuration):
     app = Flask(__name__)
     app.config.from_object(config_class) # use value from our configuration object

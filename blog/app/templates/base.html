@@ -33,6 +33,11 @@
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('views.homepage')}}">Home</a></li>
                 <li><a href="{{ url_for('entries.index')}}">Blog</a></li>
+                {% if g.user.is_authenticated %}
+                <li><a href="{{ url_for('views.logout', next=request.path) }}">Log out</a></li>
+                {% else %}
+                <li><a href="{{ url_for('views.login', next=request.path) }}">Log in</a></li>
+                {% endif %}
                 {% block extra_nav %}{% endblock %}
             </ul>
         </div>

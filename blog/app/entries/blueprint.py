@@ -1,6 +1,7 @@
 import os
 
-from flask import Blueprint, flash, render_template, request, redirect, url_for, current_app as app
+from flask import Blueprint, g, flash, render_template, request, redirect, url_for, current_app as app
+from flask_login import login_required
 from werkzeug.utils import secure_filename
 from app import db
 from app.helpers import object_list
@@ -48,6 +49,7 @@ def tag_detail(slug):
 
 
 @entries.route('/create/', methods=['GET', 'POST'])
+@login_required
 def create():
     if request.method == 'POST':
         form = EntryForm(request.form)
@@ -70,6 +72,7 @@ def detail(slug):
 
 
 @entries.route('/<slug>/edit/', methods=['GET', 'POST'])
+@login_required
 def edit(slug):
     entry = get_entry_or_404(slug)
     form = EntryForm()
@@ -91,6 +94,7 @@ def edit(slug):
 
 
 @entries.route('/<slug>/delete/', methods=['GET', 'POST'])
+@login_required
 def delete(slug):
     entry = get_entry_or_404(slug)
     if request.method == 'POST':
@@ -102,6 +106,7 @@ def delete(slug):
 
 
 @entries.route('/image-upload/', methods=['GET', 'POST'])
+@login_required
 def image_upload():
     if request.method == 'POST':
         form = ImageForm(request.form)
@@ -115,4 +120,6 @@ def image_upload():
         form = ImageForm()
 
     return render_template('entries/image_upload.html', form=form)
+
+
     
