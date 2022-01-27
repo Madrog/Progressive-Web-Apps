@@ -1,5 +1,5 @@
 import bcrypt
-from flask import Flask, g
+from flask import Flask, g, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
@@ -36,6 +36,12 @@ def create_app(config_class=Configuration):
     def _before_request():
         g.user = current_user
 
+    @app.before_request
+    def _last_page_visited():
+        if "current_page" in session:
+            session["last_page"] = session["current_page"]
+        session["current_page"] = request.path
+        
     return app
 
 

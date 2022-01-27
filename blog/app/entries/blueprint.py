@@ -13,6 +13,8 @@ entries = Blueprint('entries', __name__, template_folder='templates')
 
 
 def entry_list(template, query, **context):
+    query = filter_status_by_user(query)
+    
     valid_statuses = (Entry.STATUS_PUBLIC, Entry.STATUS_DRAFT)
     query = query.filter(Entry.status.in_(valid_statuses))
     if request.args.get('q'):
@@ -24,9 +26,24 @@ def entry_list(template, query, **context):
     return object_list(template, query, **context)
 
 
-def get_entry_or_404(slug):
-    valid_statuses = (Entry.STATUS_PUBLIC, Entry.STATUS_DRAFT) 
-    return (Entry.query.filter((Entry.slug==slug) & (Entry.status.in_(valid_statuses))).first_or_404())
+def filter_status_by_user(query):
+    if not g.user.is_authenticated:
+        query = query.filter(Entry.status == Entry.STATUS_PUBLIC)
+    else:
+        # Allow user to view their own drafts.
+        query = query.filter(
+            (Entry.status == Entry.STATUS_PUBLIC) | 
+            ((Entry.author == g.user) & (Entry.status != Entry.STATUS_DELETED)))
+    return query
+
+
+def get_entry_or_404(slug, author=None):
+    query = Entry.query.filter(Entry.slug == slug)
+    if author:
+        query = query.filter(Entry.author == author)
+    else:
+        query = filter_status_by_user(query)
+    return query.first_or_404()
 
 
 @entries.route('/')
@@ -54,7 +71,7 @@ def create():
     if request.method == 'POST':
         form = EntryForm(request.form)
         if form.validate():
-            entry = form.save_entry(Entry())
+            entry = form.save_entry(Entry(author=g.user))
             db.session.add(entry)
             db.session.commit()
             flash('Entry "%s" created successfully' % entry.title, 'success')
@@ -74,7 +91,7 @@ def detail(slug):
 @entries.route('/<slug>/edit/', methods=['GET', 'POST'])
 @login_required
 def edit(slug):
-    entry = get_entry_or_404(slug)
+    entry = get_entry_or_404(slug, author=None)
     form = EntryForm()
     if form.validate_on_submit():
         entry.title = form.title.data
@@ -96,7 +113,7 @@ def edit(slug):
 @entries.route('/<slug>/delete/', methods=['GET', 'POST'])
 @login_required
 def delete(slug):
-    entry = get_entry_or_404(slug)
+    entry = get_entry_or_404(slug, author=None)
     if request.method == 'POST':
         entry.status = Entry.STATUS_DELETED
         db.session.commit()
