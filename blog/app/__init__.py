@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, current_user
 from flask_bcrypt import Bcrypt 
+from flask_admin import Admin
 
 from app.config import Configuration 
 
@@ -14,6 +15,8 @@ bootstrap = Bootstrap()
 login_manager = LoginManager()
 login_manager.login_view = "login"
 bcrypt = Bcrypt()
+admin = Admin(name='Blog Admin', template_mode='bootstrap3')
+
 
 
 def create_app(config_class=Configuration):
@@ -25,6 +28,8 @@ def create_app(config_class=Configuration):
     login_manager.init_app(app)
     bootstrap.init_app(app)
     bcrypt.init_app(app)
+    admin.init_app(app)
+
 
     from app.views import views
     app.register_blueprint(views, url_prefix='/')
@@ -41,7 +46,7 @@ def create_app(config_class=Configuration):
         if "current_page" in session:
             session["last_page"] = session["current_page"]
         session["current_page"] = request.path
-        
+
     return app
 
 
