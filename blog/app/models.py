@@ -39,10 +39,22 @@ class Entry(db.Model):
         super(Entry, self).__init__(*args, **kwargs) # Call parent constructor.
         self.generate_slug()
 
+
     def generate_slug(self):
         self.slug = ''
         if self.title:
             self.slug = slugify(self.title)
+
+
+    @property
+    def tag_list(self):
+        return ' '.join(tag.name for tag in self.tags)
+
+
+    @property 
+    def tease(self):
+        return self.body[:100]
+
 
     def __repr__(self):
         return '<Entry: %s>' % self.title
