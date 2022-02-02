@@ -1,5 +1,7 @@
 from click import password_option
+from flask import current_app
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.fileadmin import FileAdmin
 
 from app import db, admin_dash
 from app.models import Entry, Tag, User
@@ -59,9 +61,13 @@ class UserModelView(ModelView):
         return super(UserModelView, self).on_model_change(form, model, is_created) 
 
 
+class BlogFileAdmin(FileAdmin):
+    pass
+
 admin_dash.add_view(EntryModelView(Entry, db.session))
-admin_dash.add_view(ModelView(Tag, db.session))
+admin_dash.add_view(SlugModelView(Tag, db.session))
 admin_dash.add_view(UserModelView(User, db.session))
+admin_dash.add_view(BlogFileAdmin(current_app.config['STATIC_DIR'], '/static/', name='Static Files'))
 
 
 
