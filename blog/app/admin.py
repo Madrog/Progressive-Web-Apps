@@ -1,9 +1,10 @@
 from click import password_option
-from flask import current_app
+from flask import current_app as app
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 
 from app import db, admin_dash
+from app.config import Configuration 
 from app.models import Entry, Tag, User
 from wtforms.fields import SelectField, PasswordField
 
@@ -67,7 +68,7 @@ class BlogFileAdmin(FileAdmin):
 admin_dash.add_view(EntryModelView(Entry, db.session))
 admin_dash.add_view(SlugModelView(Tag, db.session))
 admin_dash.add_view(UserModelView(User, db.session))
-admin_dash.add_view(BlogFileAdmin(current_app.config['STATIC_DIR'], '/static/', name='Static Files'))
+admin_dash.add_view(BlogFileAdmin(Configuration.STATIC_DIR, '/static/', name='Static Files'))
 
 
 
