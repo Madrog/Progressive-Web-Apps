@@ -1,5 +1,5 @@
 from click import password_option
-from flask import current_app as app
+from flask import g, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
 
@@ -9,7 +9,11 @@ from app.models import Entry, Tag, User
 from wtforms.fields import SelectField, PasswordField
 
 
-class BaseModelView(ModelView):
+class AdminAuthentication(object):
+    def is_accessible(self):
+        return g.user.is_authenticated and g.user.is_admin()
+
+class BaseModelView(AdminAuthentication, ModelView):
     pass
 
 class SlugModelView(BaseModelView):
@@ -62,7 +66,7 @@ class UserModelView(ModelView):
         return super(UserModelView, self).on_model_change(form, model, is_created) 
 
 
-class BlogFileAdmin(FileAdmin):
+class BlogFileAdmin(AdminAuthentication, FileAdmin):
     pass
 
 admin_dash.add_view(EntryModelView(Entry, db.session))

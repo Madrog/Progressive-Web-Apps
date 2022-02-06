@@ -1,11 +1,11 @@
 import bcrypt
-from flask import Flask, g, request, session
+from flask import Flask, g, request, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, current_user
 from flask_bcrypt import Bcrypt 
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView, expose
 
 from app.config import Configuration 
 
@@ -16,7 +16,15 @@ bootstrap = Bootstrap()
 login_manager = LoginManager()
 login_manager.login_view = "login"
 bcrypt = Bcrypt()
-admin_dash = Admin(name='Blog Admin', template_mode='bootstrap3')
+
+class IndexView(AdminIndexView):
+    @expose('/')
+    def index(self):
+        if not (g.user.is_authenticated and g.user.is_admin()):
+            return redirect(url_for('login', next=request.path))
+        return self.render('admin/index.html')
+
+admin_dash = Admin(name='Blog Admin', template_mode='bootstrap3', index_view=IndexView())
 
 
 def create_app(config_class=Configuration):
