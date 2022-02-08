@@ -33,6 +33,7 @@ class Entry(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     tags = db.relationship('Tag', secondary=entry_tags, 
         backref=db.backref('entries', lazy='dynamic'))
+    comments = db.relationship('Comment', backref='entry', lazy='dynamic')
 
 
     def __init__(self, *args, **kwargs):
