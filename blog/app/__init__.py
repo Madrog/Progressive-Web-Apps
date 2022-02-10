@@ -6,6 +6,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, current_user
 from flask_bcrypt import Bcrypt 
 from flask_admin import Admin, AdminIndexView, expose
+from flask_restless import APIManager
 
 from app.config import Configuration 
 
@@ -16,6 +17,7 @@ bootstrap = Bootstrap()
 login_manager = LoginManager()
 login_manager.login_view = "login"
 bcrypt = Bcrypt()
+api = None
 
 class IndexView(AdminIndexView):
     @expose('/')
@@ -37,6 +39,7 @@ def create_app(config_class=Configuration):
     bootstrap.init_app(app)
     bcrypt.init_app(app)
     admin_dash.init_app(app)
+    api = APIManager(app, flask_sqlalchemy_db=db)
 
     from app.views import views
     app.register_blueprint(views, url_prefix='/')
@@ -55,6 +58,7 @@ def create_app(config_class=Configuration):
         session["current_page"] = request.path
 
     from app import admin
+    from app import api
 
     return app
 
