@@ -152,7 +152,7 @@ class Comment(db.Model):
     ip_address = db.Column(db.String(64))
     body = db.Column(db.Text)
     status = db.Column(db.SmallInteger, default=STATUS_PUBLIC)
-    created_timestamp = db.Column(db.Datetime, default=datetime.datetime.now)
+    created_timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
     entry_id  = db.Column(db.Integer, db.ForeignKey('entry.id'))
 
     def __repr__(self) -> str:
