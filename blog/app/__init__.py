@@ -10,14 +10,13 @@ from flask_restless import APIManager
 
 from app.config import Configuration 
 
-
 db = SQLAlchemy()
 migrate = Migrate()
 bootstrap = Bootstrap()
 login_manager = LoginManager()
 login_manager.login_view = "login"
 bcrypt = Bcrypt()
-api = None
+api_manager = APIManager(flask_sqlalchemy_db=db)
 
 class IndexView(AdminIndexView):
     @expose('/')
@@ -39,8 +38,10 @@ def create_app(config_class=Configuration):
     bootstrap.init_app(app)
     bcrypt.init_app(app)
     admin_dash.init_app(app)
-    api = APIManager(app, flask_sqlalchemy_db=db)
+    api_manager.init_app(app)
 
+    
+    
     from app.views import views
     app.register_blueprint(views, url_prefix='/')
 
@@ -61,6 +62,5 @@ def create_app(config_class=Configuration):
     from app import api
 
     return app
-
 
 from app import models

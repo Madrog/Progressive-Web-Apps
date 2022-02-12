@@ -1,4 +1,4 @@
-from app import api
+from app import api_manager
 from app.models import Comment
 
-api.create_api(Comment, methods=['GET', 'POST'])
+api_manager.create_api(Comment, methods=['GET', 'POST'])
