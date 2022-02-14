@@ -1,6 +1,7 @@
+from typing import Optional
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField, FileField
-from wtforms.validators import DataRequired, Length
+from wtforms import StringField, TextAreaField, SelectField, FileField, HiddenField
+from wtforms.validators import DataRequired, Length, Optional, URL
 
 from app.models import Entry, Tag
 
@@ -57,3 +58,27 @@ class EntryForm(FlaskForm):
         self.populate_obj(entry)
         entry.generate_slug()
         return entry
+
+
+class CommentForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    url = StringField('URL', validators=[Optional(), URL()])
+    body = TextAreaField('Comment', validators=[DataRequired(), Length(min=10, max=3000)])
+    entry_id = HiddenField(validators=[DataRequired()])
+
+    def validate(self):
+        if not super(CommentForm, self).validate():
+            return False
+        
+        # Ensure that entry_id maps to a public Entry.
+        entry = Entry.query.filter(
+            (Entry.status == Entry.STATUS_PUBLIC) &
+            (Entry.id == self.entry_id.data)).first()
+        if not entry:
+            return False
+
+        return True
+
+
+
