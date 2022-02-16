@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from app import db
 from app.helpers import object_list
 from app.models import Entry, Tag
-from app.entries.forms import EntryForm, ImageForm
+from app.entries.forms import EntryForm, ImageForm, CommentForm
  
 
 entries = Blueprint('entries', __name__, template_folder='templates')
@@ -85,7 +85,8 @@ def create():
 @entries.route('/<slug>/')
 def detail(slug):
     entry = get_entry_or_404(slug)
-    return render_template('entries/detail.html', entry=entry)
+    form = CommentForm(data={'entry_id': entry.id})
+    return render_template('entries/detail.html', entry=entry, form=form)
 
 
 @entries.route('/<slug>/edit/', methods=['GET', 'POST'])

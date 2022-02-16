@@ -39,8 +39,6 @@ def create_app(config_class=Configuration):
     bcrypt.init_app(app)
     admin_dash.init_app(app)
     api_manager.init_app(app)
-
-    
     
     from app.views import views
     app.register_blueprint(views, url_prefix='/')
