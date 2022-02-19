@@ -8,7 +8,7 @@ Comments = window.Comments || {};
         '<strong>{title}</strong> {body}</div>');
 
         /* Create an alert element. */
-        function makeArt(alertClass, title, body) {
+        function makeAlert(alertClass, title, body) {
             var alertCopy = (alertMarkup
                                 .replace('{class}', alertClass)
                                 .replace('{title}', title)
@@ -41,7 +41,7 @@ Comments = window.Comments || {};
                     dataType: 'json'
                 });
                 request.success(function(data) {
-                    alertDiv = maketAlert('success', 'Success', 'your comment was posted.');
+                    alertDiv = makeAlert('success', 'Success', 'your comment was posted.');
                     form.before(alertDiv);
                     form[0].reset();               
                 });

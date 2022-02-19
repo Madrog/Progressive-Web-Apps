@@ -1,4 +1,7 @@
 import datetime, re
+import hashlib
+
+import urllib3
 
 from app import db, login_manager, bcrypt
 
@@ -154,6 +157,12 @@ class Comment(db.Model):
     status = db.Column(db.SmallInteger, default=STATUS_PUBLIC)
     created_timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
     entry_id  = db.Column(db.Integer, db.ForeignKey('entry.id'))
+
+    def gravatar(self, size=75):
+        return 'http://www.gravatar.com/avatar.php?%s' % urllib3.urlencode({
+            'gravatar_id': hashlib.md5(self.email).hexdigest(),
+            'size': str(size)
+        })
 
     def __repr__(self) -> str:
         return '<Comment from %r>' % (self.name,)
