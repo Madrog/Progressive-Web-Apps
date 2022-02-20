@@ -102,7 +102,8 @@ class User(db.Model):
 
     # Flask-Login interface..
     def get_id(self):
-        return unicode(self.id)
+        # return unicode(self.id)
+        return ord(self.id)
 
 
     def is_authenticated(self):
