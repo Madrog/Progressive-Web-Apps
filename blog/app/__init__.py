@@ -7,6 +7,8 @@ from flask_login import LoginManager, current_user
 from flask_bcrypt import Bcrypt 
 from flask_admin import Admin, AdminIndexView, expose
 from flask_restless import APIManager
+from flask_seasurf import SeaSurf
+
 
 from app.config import Configuration 
 
@@ -17,6 +19,7 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 bcrypt = Bcrypt()
 api_manager = APIManager(flask_sqlalchemy_db=db)
+csrf = SeaSurf()
 
 class IndexView(AdminIndexView):
     @expose('/')
@@ -39,6 +42,7 @@ def create_app(config_class=Configuration):
     bcrypt.init_app(app)
     admin_dash.init_app(app)
     api_manager.init_app(app)
+    csrf.init_app(app)
     
     from app.views import views
     app.register_blueprint(views, url_prefix='/')

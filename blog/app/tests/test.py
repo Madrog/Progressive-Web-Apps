@@ -1,7 +1,7 @@
 import unittest
 
 def my_multiplication(value1, value2):
-    return value1 * value2 - 1
+    return value1 * (value2 - 1)
 
 
 class ExampleTest(unittest.TestCase):
